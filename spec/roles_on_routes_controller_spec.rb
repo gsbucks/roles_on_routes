@@ -1,82 +1,46 @@
-require 'action_dispatch'
-require 'action_dispatch/routing/routeset_override'
-require 'action_dispatch/routing/mapper_override'
+require 'rolesonroutes/roles_on_routes_controller'
 
-class AnimalsController
-end
-class RatsController
-end
-class CatsController
+class ArbitraryController < ActionController::Base
+  include RolesOnRoutes::AuthorizesFromRolesController
+
+  private
+
+  def current_user_roles
+    [:user_roles]
+  end
 end
 
-describe 'ActionDispatch::Routing::Routeset#roles_for' do
-  let (:routeset) { ActionDispatch::Routing::RouteSet.new }
+describe ArbitraryController do
+  describe '#authorize_from_role_intersection' do
+    let (:controller) { ArbitraryController.new }
+    subject { controller.send(:authorize_from_role_intersection) }
 
-  before do
-    routeset.draw do
-      scope roles: [:staff] do
-        resources :animals, action_roles: { show: [:not_staff] } do
-          resources :cats
-          resources :rats, action_roles: { index: [:admin] }
-          member do
-            get :penguin, roles: [:woop]
-          end
-        end
-      end
+    before do
+      controller.should_receive(:request).twice.and_return(stub({ path: '/arbitrary', request_method: 'GET' }))
+      RolesOnRoutes::Base.should_receive(:roles_for).with('/arbitrary', 'GET').and_return(roles_from_routes)
+    end
+
+    context 'roles match' do
+      let(:roles_from_routes) { :user_roles }
+      before { controller.should_not_receive(:role_authorization_failure_response) }
+      it { should be_true }
+    end
+
+    context 'roles dont match' do
+      let(:roles_from_routes) { :danger_zone }
+      before { controller.should_receive(:role_authorization_failure_response).and_return(true) }
+      it { should be_true }
     end
   end
 
-  subject { routeset.roles_for(path) }
+  describe '#current_user_roles' do
+    subject { ArbitraryController.new.send(:current_user_roles) }
 
-  context 'bad path' do
-    let (:path) { '/donkey' }
-    it { expect{ subject }.to raise_error }
+    context 'current_user_roles isnt defined' do
+      before { ArbitraryController.send(:remove_method, :current_user_roles) }
+      it { expect{ subject }.to raise_error NoMethodError }
+    end
+
+    it { should == [:user_roles] }
   end
-
-  context 'animals controller' do
-    context 'cats index' do
-      let (:path) { '/animals/1/cats' }
-      it { should == [:staff] }
-    end
-
-    context 'cats show' do
-      let (:path) { '/animals/1/cats/2' }
-      it { should == [:staff] }
-    end
-
-    context 'rats index' do
-      let (:path) { '/animals/1/rats' }
-      it { should == [:admin] }
-    end
-
-    context 'rats show' do
-      let (:path) { '/animals/1/rats/2' }
-      it { should == [:staff] }
-    end
-
-    context 'penguin get' do
-      let (:path) { '/animals/1/penguin' }
-      it { should == [:woop] }
-    end
-
-    context 'animals index' do
-      let (:path) { '/animals' }
-      it { should == [:staff] }
-    end
-
-    context 'animals show' do
-      let (:path) { '/animals/1' }
-      it { should == [:not_staff] }
-    end
-  end
-
-  #describe 'controller action' do
-    #it 'should good' do
-      #rs = routeset
-      #c = Class.new {
-        #include rs.url_helpers
-      #}
-      #p c.new.animals_url(only_path: true)
-    #end
-  #end
 end

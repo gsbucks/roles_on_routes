@@ -1,4 +1,4 @@
-require 'rolesonroutes/configuration'
+require 'rolesonroutes/base'
 require 'action_dispatch/routing/routeset_override'
 require 'action_dispatch/routing/mapper_override'
 require 'action_view'
@@ -19,8 +19,7 @@ module RolesOnRoutes
     private
 
       def roles_from_polymorphic_array(array)
-        # REFACTOR THIS
-        RolesOnRoutes::Configuration.routeset_containing_roles.roles_for(url_for(array))
+        RolesOnRoutes::Base.roles_for(url_for(array))
       end
     end
   end
