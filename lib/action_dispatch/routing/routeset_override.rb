@@ -12,7 +12,9 @@ module ActionDispatch
       private
 
       def action_roles_from_path(pathset, action)
-        pathset[:action_roles] && pathset[:action_roles][action.to_sym]
+        return unless pathset[:action_roles].present?
+        raise 'Action roles must be a hash' unless pathset[:action_roles].is_a?(Hash)
+        pathset[:action_roles][action.to_sym]
       end
 
       def roles_from_path(pathset)
