@@ -1,4 +1,3 @@
-require 'action_dispatch/routing/routeset_override'
 require 'action_dispatch/routing/mapper_override'
 
 require 'roles_on_routes/base'

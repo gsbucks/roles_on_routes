@@ -16,9 +16,8 @@ describe ArbitraryController do
     subject { controller.send(:authorize_from_role_intersection) }
 
     before do
-      controller.should_receive(:params).and_return({ par: 'ams' })
       controller.should_receive(:request).twice.and_return(stub({ path: '/arbitrary', request_method: 'GET' }))
-      RolesOnRoutes::Base.should_receive(:roles_for).with('/arbitrary', 'GET', { par: 'ams' }).and_return(roles_from_routes)
+      RolesOnRoutes::Base.should_receive(:roles_for).with('/arbitrary', 'GET').and_return(roles_from_routes)
     end
 
     context 'roles match' do
