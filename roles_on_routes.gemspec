@@ -2,7 +2,7 @@ $:.push File.expand_path('../lib', __FILE__)
 require 'roles_on_routes/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'rolesonroutes'
+  s.name        = 'roles_on_routes'
   s.version     = RolesOnRoutes::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Navigating Cancer']
