@@ -1,5 +1,5 @@
 $:.push File.expand_path('../lib', __FILE__)
-require 'rolesonroutes/version'
+require 'roles_on_routes/version'
 
 Gem::Specification.new do |s|
   s.name        = 'rolesonroutes'

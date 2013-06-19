@@ -1,4 +1,4 @@
-require 'rolesonroutes/roles_on_routes_controller'
+require 'roles_on_routes/roles_on_routes_controller'
 
 class ArbitraryController < ActionController::Base
   include RolesOnRoutes::AuthorizesFromRolesController
@@ -16,18 +16,19 @@ describe ArbitraryController do
     subject { controller.send(:authorize_from_role_intersection) }
 
     before do
+      controller.should_receive(:params).and_return({ par: 'ams' })
       controller.should_receive(:request).twice.and_return(stub({ path: '/arbitrary', request_method: 'GET' }))
-      RolesOnRoutes::Base.should_receive(:roles_for).with('/arbitrary', 'GET').and_return(roles_from_routes)
+      RolesOnRoutes::Base.should_receive(:roles_for).with('/arbitrary', 'GET', { par: 'ams' }).and_return(roles_from_routes)
     end
 
     context 'roles match' do
-      let(:roles_from_routes) { :user_roles }
+      let(:roles_from_routes) { [:user_roles] }
       before { controller.should_not_receive(:role_authorization_failure_response) }
       it { should be_true }
     end
 
     context 'roles dont match' do
-      let(:roles_from_routes) { :danger_zone }
+      let(:roles_from_routes) { [:danger_zone] }
       before { controller.should_receive(:role_authorization_failure_response).and_return(true) }
       it { should be_true }
     end

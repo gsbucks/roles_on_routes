@@ -6,7 +6,7 @@ module ActionDispatch
       def roles_for(path, verb)
         recognized_pathset = recognize_path(path, { method: verb })
         action = recognized_pathset[:action]
-        Array.wrap(action_roles_from_path(recognized_pathset, action) || roles_from_path(recognized_pathset) || [])
+        action_roles_from_path(recognized_pathset, action) || roles_from_path(recognized_pathset) || []
       end
 
       private

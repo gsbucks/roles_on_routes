@@ -1,4 +1,4 @@
-require 'rolesonroutes/action_view_extensions/tags_with_roles'
+require 'roles_on_routes/action_view_extensions/tags_with_roles'
 require 'ostruct'
 
 class AnimalsController

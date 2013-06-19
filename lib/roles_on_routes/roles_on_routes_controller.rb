@@ -1,4 +1,4 @@
-require 'rolesonroutes/base'
+require 'roles_on_routes/base'
 require 'active_support/concern'
 require 'abstract_controller'
 
@@ -13,7 +13,7 @@ module RolesOnRoutes
     private
 
     def authorize_from_role_intersection
-      return true if ::RolesOnRoutes::Base.authorizes?(request.path, request.request_method, current_user_roles)
+      return true if ::RolesOnRoutes::Base.authorizes?(request.path, request.request_method, current_user_roles, params)
       role_authorization_failure_response
     end
 
