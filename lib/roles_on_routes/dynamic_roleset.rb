@@ -12,7 +12,7 @@ module RolesOnRoutes
     end
 
     def to_s
-      'dynamic_rolset'
+      '"dynamic_roleset"'
     end
     alias_method :inspect, :to_s
   end
