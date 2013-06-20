@@ -22,6 +22,10 @@ module RolesOnRoutes
       end
     end
 
+    def [](roleset)
+      Array.wrap(@rolesets[roleset])
+    end
+
     class RolesetNotFoundException < Exception
     end
   end

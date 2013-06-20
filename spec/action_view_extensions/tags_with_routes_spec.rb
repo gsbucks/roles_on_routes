@@ -15,17 +15,19 @@ class Animal
 end
 
 describe 'ActionDispatch::Routing::Routeset#roles_for' do
+  before do
+    RolesOnRoutes::Configuration.define_roles do
+      add :all,   [:staff, :not_staff]
+      add :staff, :staff
+    end
+  end
+
   describe '#link_to_with_roles' do
     let(:routeset) { ActionDispatch::Routing::RouteSet.new }
     let(:link_text)   { 'Link Text' }
     let(:action_view) { ActionView::Base.new }
 
     before do
-      RolesOnRoutes::Configuration.define_roles do
-        add :all,   [:staff, :not_staff]
-        add :staff, :staff
-      end
-
       routeset.draw do
         resources :animals, roles: :staff, action_roles: { show: :all }
       end
@@ -53,7 +55,7 @@ describe 'ActionDispatch::Routing::Routeset#roles_for' do
 
   describe '#div_with_roles' do
     let(:action_view)    { ActionView::Base.new }
-      let(:roles)        { [:staff, :admin] }
+    let(:roles)          { :staff }
     let(:arbitrary_text) { 'Some arbitrary text' }
 
     subject do
@@ -62,14 +64,7 @@ describe 'ActionDispatch::Routing::Routeset#roles_for' do
       end
     end
 
-    context 'single role' do
-      let(:roles) { :staff }
-      it { should == "<div #{RolesOnRoutes::TAG_ROLES_ATTRIBUTE}=\"staff\">#{arbitrary_text}</div>" }
-    end
-
-    context 'multiple roles' do
-      it { should == "<div #{RolesOnRoutes::TAG_ROLES_ATTRIBUTE}=\"staff admin\">#{arbitrary_text}</div>" }
-    end
+    it { should == "<div #{RolesOnRoutes::TAG_ROLES_ATTRIBUTE}=\"staff\">#{arbitrary_text}</div>" }
 
     context 'no block' do
       subject { action_view.div_with_roles(roles) }
