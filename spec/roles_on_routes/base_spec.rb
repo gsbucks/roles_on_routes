@@ -41,14 +41,15 @@ describe RolesOnRoutes::Base do
       it { should == roleset }
     end
 
-    context 'symbol' do
+    context 'symbol without defining proc' do
       let (:roleset) { :staff }
-      it { should == [roleset] }
+      it { expect{ subject }.to raise_error RolesOnRoutes::DynamicRoleset::DynamicRolesetNotFoundException }
     end
 
     context 'proc' do
       let (:path)    { '/animals/1/cats' }
-      let (:roleset) { RolesOnRoutes::DynamicRoleset.new{|params| params[:animal_id] } }
+      before { RolesOnRoutes::DynamicRoleset.add(:reference){|params| params[:animal_id] } }
+      let (:roleset) { :reference }
       it { should == ['1'] }
     end
 

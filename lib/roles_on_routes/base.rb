@@ -14,7 +14,7 @@ module RolesOnRoutes
         path_params = Configuration.routeset_containing_roles.recognize_path(path, { method: verb })
         action = path_params[:action]
         route_roles = action_roles_from_path(path_params, action) || roles_from_path(path_params) || []
-        Array.wrap(route_roles.respond_to?(:call) ? route_roles.call(path_params) : route_roles)
+        Array.wrap(route_roles.is_a?(Array) ? route_roles : DynamicRoleset.execute(route_roles, path_params))
       end
 
       private
