@@ -1,5 +1,5 @@
 require 'roles_on_routes/configuration'
-require 'roles_on_routes/dynamic_roleset'
+require 'roles_on_routes/role_collection'
 
 module RolesOnRoutes
   class Base
@@ -13,8 +13,8 @@ module RolesOnRoutes
       def roles_for(path, verb='GET')
         path_params = Configuration.routeset_containing_roles.recognize_path(path, { method: verb })
         action = path_params[:action]
-        route_roles = action_roles_from_path(path_params, action) || roles_from_path(path_params) || []
-        Array.wrap(route_roles.is_a?(Array) ? route_roles : DynamicRoleset.execute(route_roles, path_params))
+        roleset_name = action_roles_from_path(path_params, action) || roles_from_path(path_params)
+        Configuration.role_collection.execute(roleset_name, path_params)
       end
 
       private

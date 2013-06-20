@@ -20,13 +20,23 @@ describe RolesOnRoutes::Base do
 
     before do
       r = roleset # Scoping problem when defining routes if only set in lets
+
+      RolesOnRoutes::Configuration.define_roles do
+        add :not_staff, [:not_staff]
+        add :admin,     [:admin]
+        add :penguins,  [:penguin_handler, :penguin_trainer]
+        add :staff_block do
+          [:staff]
+        end
+      end
+
       routeset.draw do
-        scope roles: r do
-          resources :animals, action_roles: { show: [:not_staff] } do
+        scope roles: :staff_block do
+          resources :animals, action_roles: { show: :not_staff } do
             resources :cats
-            resources :rats, action_roles: { index: [:admin] }
+            resources :rats, action_roles: { index: :admin }
             member do
-              get :penguin, roles: [:woop]
+              get :penguin, roles: :penguins
             end
           end
         end
@@ -35,23 +45,6 @@ describe RolesOnRoutes::Base do
     end
 
     subject { RolesOnRoutes::Base.roles_for(path, action) }
-
-    context 'array' do
-      let (:roleset) { [:staff] }
-      it { should == roleset }
-    end
-
-    context 'symbol without defining proc' do
-      let (:roleset) { :staff }
-      it { expect{ subject }.to raise_error RolesOnRoutes::DynamicRoleset::DynamicRolesetNotFoundException }
-    end
-
-    context 'proc' do
-      let (:path)    { '/animals/1/cats' }
-      before { RolesOnRoutes::DynamicRoleset.add(:reference){|params| params[:animal_id] } }
-      let (:roleset) { :reference }
-      it { should == ['1'] }
-    end
 
     context 'bad path' do
       let (:path) { '/donkey' }
@@ -81,7 +74,7 @@ describe RolesOnRoutes::Base do
 
       context 'penguin get' do
         let (:path) { '/animals/1/penguin' }
-        it { should == [:woop] }
+        it { should == [:penguin_handler, :penguin_trainer] }
       end
 
       context 'animals index' do
