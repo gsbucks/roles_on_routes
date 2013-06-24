@@ -32,9 +32,9 @@ describe RolesOnRoutes::Base do
 
       routeset.draw do
         scope roles: :staff_block do
-          resources :animals, action_roles: { show: :not_staff } do
+          resources :animals, action_roles: { not_staff: :show } do
             resources :cats
-            resources :rats, action_roles: { index: :admin }
+            resources :rats, action_roles: { admin: [:index] }
             member do
               get :penguin, roles: :penguins
             end

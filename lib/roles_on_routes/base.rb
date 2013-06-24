@@ -22,7 +22,15 @@ module RolesOnRoutes
       def action_roles_from_path(pathset, action)
         return unless pathset[:action_roles].present?
         raise 'Action roles must be a hash' unless pathset[:action_roles].is_a?(Hash)
-        pathset[:action_roles][action.to_sym]
+
+        pathset[:action_roles].each do |roleset, actions|
+          if actions.is_a?(Array)
+            return roleset if actions.include?(action.to_sym)
+          else
+            return roleset if actions == action.to_sym
+          end
+        end
+        nil
       end
 
       def roles_from_path(pathset)

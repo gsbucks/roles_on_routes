@@ -29,7 +29,7 @@ describe 'ActionDispatch::Routing::Routeset#roles_for' do
 
     before do
       routeset.draw do
-        resources :animals, roles: :staff, action_roles: { show: :all }
+        resources :animals, roles: :staff, action_roles: { all: :show }
       end
 
       RolesOnRoutes::Configuration.routeset_containing_roles = routeset
