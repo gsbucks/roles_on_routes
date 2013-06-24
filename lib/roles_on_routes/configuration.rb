@@ -1,6 +1,8 @@
 module RolesOnRoutes
   TAG_ROLES_ATTRIBUTE='allowed-roles'
 
+  AUTH_CALLBACK=:authorize_from_role_intersection
+
   class Configuration
     class << self
       def routeset_containing_roles
