@@ -10,9 +10,15 @@ module RolesOnRoutes
         link_to link_text, poly_array, options.merge({ RolesOnRoutes::TAG_ROLES_ATTRIBUTE => roles_from_polymorphic_array(poly_array).join(' ') })
       end
 
-      def div_with_roles(roleset, options={}, &block)
-        raise 'Must provide a block to div_with_roles' unless block_given?
-        content_tag(:div, options.merge({ RolesOnRoutes::TAG_ROLES_ATTRIBUTE => ::RolesOnRoutes::Configuration.role_collection[roleset].join(' ') }), &block)
+      def content_tag_with_roles(tag_type, roleset, options={}, &block)
+        raise 'Must provide a block to content_with_roles methods' unless block_given?
+        content_tag(tag_type, options.merge({ RolesOnRoutes::TAG_ROLES_ATTRIBUTE => ::RolesOnRoutes::Configuration.role_collection[roleset].join(' ') }), &block)
+      end
+
+      [:div, :li, :tr, :ul, :ol].each do |tag_type|
+        define_method("#{tag_type}_with_roles") do |roles, options={}, &block|
+          content_tag_with_roles(tag_type, roles, options, &block)
+        end
       end
 
     private

@@ -71,4 +71,23 @@ describe 'ActionDispatch::Routing::Routeset#roles_for' do
       it { expect{ subject }.to raise_error }
     end
   end
+
+  describe '#content_tag_with_roles' do
+    let(:action_view)    { ActionView::Base.new }
+    let(:roles)          { :staff }
+    let(:arbitrary_text) { 'Some arbitrary text' }
+
+    subject do
+      action_view.content_tag_with_roles(:td, roles) do
+        arbitrary_text
+      end
+    end
+
+    it { should == "<td #{RolesOnRoutes::TAG_ROLES_ATTRIBUTE}=\"staff\">#{arbitrary_text}</td>" }
+
+    context 'no block' do
+      subject { action_view.content_tag_with_roles(:td, roles) }
+      it { expect{ subject }.to raise_error }
+    end
+  end
 end
