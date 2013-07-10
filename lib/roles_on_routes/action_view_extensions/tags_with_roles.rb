@@ -15,7 +15,7 @@ module RolesOnRoutes
         content_tag(tag_type, options.merge({ RolesOnRoutes::TAG_ROLES_ATTRIBUTE => ::RolesOnRoutes::Configuration.role_collection[roleset].join(' ') }), &block)
       end
 
-      [:div, :li, :tr, :ul, :ol].each do |tag_type|
+      [:div, :li, :tr, :td, :ul, :ol].each do |tag_type|
         define_method("#{tag_type}_with_roles") do |roles, options={}, &block|
           content_tag_with_roles(tag_type, roles, options, &block)
         end
