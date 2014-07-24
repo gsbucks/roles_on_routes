@@ -1,3 +1,5 @@
+require 'roles_on_routes/engine_aware_route_set'
+
 module RolesOnRoutes
   TAG_ROLES_ATTRIBUTE='allowed-roles'
 
@@ -8,7 +10,7 @@ module RolesOnRoutes
       def routeset_containing_roles
         @routeset_containing_roles ||= begin
           if defined?(Rails)
-            Rails.application.routes 
+            EngineAwareRouteSet.for(Rails.application)
           else
             raise NoMethodError, %q{If including this module without rails, there must be a routeset defined 
                                     using the setter routeset_containing_roles=}
