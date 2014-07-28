@@ -19,6 +19,9 @@ describe 'ActionDispatch::Routing::Routeset#roles_for' do
     RolesOnRoutes::Configuration.define_roles do
       add :all,   [:staff, :not_staff]
       add :staff, :staff
+      add :dynamic_group do |params|
+        [ "foobar_#{params[:id]}" ]
+      end
     end
   end
 
@@ -88,6 +91,18 @@ describe 'ActionDispatch::Routing::Routeset#roles_for' do
     context 'no block' do
       subject { action_view.content_tag_with_roles(:td, roles) }
       it { expect{ subject }.to raise_error }
+    end
+
+    context 'with dynamic role groups' do
+      let(:roles) { :dynamic_group }
+
+      before do
+        controller = stub('controller')
+        controller.stub(:params).and_return({ id: 123 })
+        action_view.stub(:controller).and_return(controller)
+      end
+
+      it { should == "<td #{RolesOnRoutes::TAG_ROLES_ATTRIBUTE}=\"foobar_123\">#{arbitrary_text}</td>" }
     end
   end
 end

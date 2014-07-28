@@ -12,7 +12,10 @@ module RolesOnRoutes
 
       def content_tag_with_roles(tag_type, roleset, options={}, &block)
         raise 'Must provide a block to content_with_roles methods' unless block_given?
-        content_tag(tag_type, options.merge({ RolesOnRoutes::TAG_ROLES_ATTRIBUTE => ::RolesOnRoutes::Configuration.role_collection[roleset].join(' ') }), &block)
+        roles = ::RolesOnRoutes::Configuration.role_collection[roleset].flat_map do |definition|
+          definition.is_a?(Proc) ? instance_exec(params, &definition) : definition
+        end
+        content_tag(tag_type, options.merge({ RolesOnRoutes::TAG_ROLES_ATTRIBUTE => roles.join(' ') }), &block)
       end
 
       [:div, :li, :tr, :td, :ul, :ol].each do |tag_type|

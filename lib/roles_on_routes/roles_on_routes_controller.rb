@@ -18,11 +18,8 @@ module RolesOnRoutes
     end
 
     def current_user_roles
-      begin
-        super
-      rescue NoMethodError => e
-        raise NoMethodError, 'A controller which includes this module must define a current_user_roles method'
-      end
+      raise NoMethodError, 'A controller which includes this module must define a current_user_roles method' unless defined?(super)
+      super
     end
 
     def role_authorization_failure_response
