@@ -7,7 +7,7 @@ module RolesOnRoutes
     extend ActiveSupport::Concern
 
     included do
-      prepend_before_filter :authorize_from_role_intersection
+      before_filter :authorize_from_role_intersection
     end
 
     private
