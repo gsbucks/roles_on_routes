@@ -97,9 +97,9 @@ describe 'ActionDispatch::Routing::Routeset#roles_for' do
       let(:roles) { :dynamic_group }
 
       before do
-        controller = stub('controller')
-        controller.stub(:params).and_return({ id: 123 })
-        action_view.stub(:controller).and_return(controller)
+        controller = double('controller')
+        expect(controller).to receive(:params).and_return({ id: 123 })
+        expect(action_view).to receive(:controller).and_return(controller)
       end
 
       it { should == "<td #{RolesOnRoutes::TAG_ROLES_ATTRIBUTE}=\"foobar_123\">#{arbitrary_text}</td>" }

@@ -1,6 +1,5 @@
 require 'roles_on_routes/base'
 require 'ostruct'
-require 'debugger'
 
 class AnimalsController
 end

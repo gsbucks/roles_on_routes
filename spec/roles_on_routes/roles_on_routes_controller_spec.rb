@@ -16,20 +16,20 @@ describe ArbitraryController do
     subject { controller.send(:authorize_from_role_intersection) }
 
     before do
-      controller.should_receive(:request).twice.and_return(stub({ path: '/arbitrary', request_method: 'GET' }))
-      RolesOnRoutes::Base.should_receive(:roles_for).with('/arbitrary', 'GET').and_return(roles_from_routes)
+      expect(controller).to receive(:request).twice.and_return(double({ path: '/arbitrary', request_method: 'GET' }))
+      expect(RolesOnRoutes::Base).to receive(:roles_for).with('/arbitrary', 'GET').and_return(roles_from_routes)
     end
 
     context 'roles match' do
       let(:roles_from_routes) { [:user_roles] }
-      before { controller.should_not_receive(:role_authorization_failure_response) }
-      it { should be_true }
+      before { expect(controller).not_to receive(:role_authorization_failure_response) }
+      it { should be true }
     end
 
     context 'roles dont match' do
       let(:roles_from_routes) { [:danger_zone] }
-      before { controller.should_receive(:role_authorization_failure_response).and_return(true) }
-      it { should be_true }
+      before { expect(controller).to receive(:role_authorization_failure_response).and_return(true) }
+      it { should be true }
     end
   end
 
