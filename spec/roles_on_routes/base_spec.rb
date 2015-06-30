@@ -47,7 +47,7 @@ describe RolesOnRoutes::Base do
 
     context 'bad path' do
       let (:path) { '/donkey' }
-      it { expect{ subject }.to raise_error }
+      it { expect{ subject }.to raise_error StandardError }
     end
 
     context 'animals controller' do

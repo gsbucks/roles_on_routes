@@ -71,7 +71,7 @@ describe 'ActionDispatch::Routing::Routeset#roles_for' do
 
     context 'no block' do
       subject { action_view.div_with_roles(roles) }
-      it { expect{ subject }.to raise_error }
+      it { expect{ subject }.to raise_error StandardError }
     end
   end
 
@@ -90,7 +90,7 @@ describe 'ActionDispatch::Routing::Routeset#roles_for' do
 
     context 'no block' do
       subject { action_view.content_tag_with_roles(:td, roles) }
-      it { expect{ subject }.to raise_error }
+      it { expect{ subject }.to raise_error StandardError }
     end
 
     context 'with dynamic role groups' do
