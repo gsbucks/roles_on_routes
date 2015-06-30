@@ -17,18 +17,24 @@ module RolesOnRoutes
 
       if route_match
         journey_route = route_match.last
-        engine = journey_route.app
+        app = journey_route.app
+        # Peel off the constraints
+        while app.respond_to?(:constraints)
+          app = app.app
+        end
 
+        engine = app
         if engine.respond_to?(:routes)
           begin
             engine_path = path.gsub(journey_route.path.to_regexp, '')
             return engine.routes.recognize_path(engine_path, environment)
           rescue ActionController::RoutingError
+            Rails.logger.info("RoutingError occurred applying RolesOnRoutes to an engine")
           end
         end
       end
 
-      @main_routeset.recognize_path(path, environment) 
+      @main_routeset.recognize_path(path, environment)
     end
   end
 end
