@@ -5,12 +5,20 @@ class AnimalsController
 end
 
 class Animal
-  def self.model_name
+  def model_name
     OpenStruct.new({ singular_route_key: 'animal' })
   end
 
+  def to_model
+    self
+  end
+
+  def persisted?
+    true
+  end
+
   def to_param
-    1
+    '1'
   end
 end
 
@@ -34,24 +42,23 @@ describe 'ActionDispatch::Routing::Routeset#roles_for' do
       routeset.draw do
         resources :animals, roles: :staff, action_roles: { all: :show }
       end
+      ActionView::Base.send(:include, routeset.url_helpers)
 
       RolesOnRoutes::Configuration.routeset_containing_roles = routeset
-      routeset.install_helpers
-      action_view._routes = routeset
     end
 
     subject { action_view.link_to_with_roles(link_text, polymorphic_array) }
 
     context 'animals index' do
       let (:polymorphic_array) { [:animals] }
-      it { should include('<a href="/animals"') }
+      it { should match(/<a.*href="\/animals"/) }
       it { should include(link_text) }
       it { should include("#{RolesOnRoutes::TAG_ROLES_ATTRIBUTE}=\"staff\"") }
     end
 
     context 'animals show' do
       let (:polymorphic_array) { [Animal.new] }
-      it { should include('<a href="/animals/1"') }
+      it { should match(/<a.*href="\/animals\/1"/) }
       it { should include("#{RolesOnRoutes::TAG_ROLES_ATTRIBUTE}=\"staff not_staff\"") }
     end
   end

@@ -24,7 +24,7 @@ module RolesOnRoutes
         end
       end
 
-    private
+      private
 
       def roles_from_polymorphic_array(array)
         RolesOnRoutes::Base.roles_for(url_for(array))

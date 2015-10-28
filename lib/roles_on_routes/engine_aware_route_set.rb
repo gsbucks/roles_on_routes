@@ -10,10 +10,13 @@ module RolesOnRoutes
     end
 
     def recognize_path(path, environment={})
-      route_match = @main_routeset.router.send(:find_routes, {
-        'PATH_INFO' => path,
-        'REQUEST_METHOD' => environment[:method]
-      }).first
+      route_match = @main_routeset.router.send(
+        :find_routes,
+        ActionDispatch::Request.new(
+          'PATH_INFO' => path,
+          'REQUEST_METHOD' => environment[:method]
+        )
+      ).first
 
       if route_match
         journey_route = route_match.last
