@@ -17,16 +17,17 @@ module ActionDispatch
       end
       include ClearsActionRolesFromChildScope
 
-      class Mapping
-        
-        def constraints_with_remove_roles(*args)
-          constraints = constraints_without_remove_roles(*args)
-          @conditions[:required_defaults].delete(:action_roles)
-          @conditions[:required_defaults].delete(:roles)
-          constraints
+      module MappingWithoutRoles
+        ROLE_KEYS = [:action_roles, :roles]
+
+        def constraints(*args)
+          super(*args).tap do |cs|
+            next unless cs[:required_defaults]
+            cs[:required_defaults].delete_if{|set| ROLE_KEYS.include?(set[0]) }
+          end
         end
-        alias_method_chain :constraints, :remove_roles
       end
+      Mapping.send(:prepend, MappingWithoutRoles)
     end
   end
 end

@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.summary     = 'Define your authorization roles on the routes they apply to'
   s.description = %q{ }
 
-  s.add_dependency 'actionpack', '~> 4.0'
-  s.add_dependency 'activesupport', '~> 4.0'
+  s.add_dependency 'actionpack', '>= 5.0'
+  s.add_dependency 'activesupport', '>= 5.0'
   s.add_development_dependency 'rspec'
 
   #s.files         = `git ls-files`.split("\n")
